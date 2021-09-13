@@ -19,6 +19,7 @@ if [[ -z "$VENVE_DIR" ]]; then
     VENVE_DIR="$HOME/.local/share/venve"
 fi
 if [[ -z "$VENVE_DEFAULT_PYTHON_SUFFIX" ]]; then
+    # this suffix will be added to python if no suffix is specified
     VENVE_DEFAULT_PYTHON_SUFFIX=""
 fi
 
@@ -28,7 +29,7 @@ fi
 
 ve() {
     if [[ -z $1 ]]; then
-        echo "No name provided!"
+        echo "venve.sh ve(): No name provided!"
         return 1
     fi
 
@@ -43,7 +44,7 @@ ve() {
 
 nve() {
     if [[ -z $1 ]]; then
-        echo "No name provided!"
+        echo "venve.sh nve(): No name provided!"
         return 1
     fi
 
@@ -63,7 +64,7 @@ nve() {
 
 lnve() {
     if [[ $# -lt 2 ]]; then
-        echo "Please provide a target path and name for the environment!"
+        echo "venve.sh lnve(): Please provide a target path and name for the environment!"
         return 1
     fi
     
