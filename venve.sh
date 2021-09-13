@@ -33,6 +33,7 @@ ve() {
     fi
 
     source "$VENVE_DIR/$1/bin/activate"
+    alias exit="deactivate && unalias exit"
     
     if [[ $# -gt 1 ]]; then
         ${@:2} || return 1
