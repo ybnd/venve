@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Basic shell utility for Python virtual environments
-# Usage: source this script in your .bashrc file & use the following functions
+# Usage: source this script in your .bashrc or .zshrc file & use the following functions
 #   ve <name> <commands?>           activate an environment (and execute any provided commands)
 #   nve <name> <python suffix?>     create a new environment
 #   lnve <path>                     link an existing environment
@@ -22,9 +22,6 @@ if [[ -z "$VENVE_DEFAULT_PYTHON_SUFFIX" ]]; then
     # this suffix will be added to python if no suffix is specified
     VENVE_DEFAULT_PYTHON_SUFFIX=""
 fi
-
-# Check is script is sourced, complain if it's not
-( return 0 2>/dev/null ) || echo "venve.sh should be called ~ source!"
 
 
 ve() {
@@ -59,7 +56,7 @@ nve() {
     ve $1
     pip install --upgrade pip
     
-    __venve_export
+    __venve
 }
 
 lnve() {
@@ -74,7 +71,7 @@ lnve() {
     ln -s "$(realpath $1)" "$2"
     cd "$OG_DIR"
     
-    __venve_export
+    __venve
 }
 
 cdve() {
@@ -85,16 +82,31 @@ lsve() {
     ls "$VENVE_DIR"
 }
 
-__venve_export() {
-    complete -W "$(lsve)" ve
-    complete -W "$(lsve)" cdve
+__venve() {
+    if [[ -n "$BASH_VERSION" ]]; then
+        complete -W "$(lsve)" ve
+        complete -W "$(lsve)" cdve
     
-    export -f ve
-    export -f nve
-    export -f lnve
-    export -f cdve
-    export -f lsve
+        export -f ve
+        export -f nve
+        export -f lnve
+        export -f cdve
+        export -f lsve
+    elif [[ -n "$ZSH_VERSION" ]]; then
+        autoload -U compinit; compinit
+
+        _completion() {
+            compadd $(lsve)
+        }
+
+        compdef _completion ve
+        compdef _completion cdve
+    else
+        echo "venve.sh: Current shell '$0' is not supported!"
+        return 1
+    fi
+
 }
 
-__venve_export
+__venve
 
