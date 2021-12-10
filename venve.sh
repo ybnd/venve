@@ -31,11 +31,14 @@ ve() {
     fi
 
     source "$VENVE_DIR/$1/bin/activate"
-    alias exit="deactivate && unalias exit"
     
     if [[ $# -gt 1 ]]; then
-        ${@:2} || return 1
+        ${@:2}
+        STATUS="$?"
         deactivate
+        return $STATUS
+    else
+        alias exit="deactivate && unalias exit"
     fi
 }
 
@@ -99,8 +102,7 @@ __venve() {
             compadd $(lsve)
         }
 
-        compdef _completion ve
-        compdef _completion cdve
+        compdef _completion ve cdve
     else
         echo "venve.sh: Current shell '$0' is not supported!"
         return 1
